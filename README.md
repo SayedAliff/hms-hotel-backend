@@ -90,77 +90,95 @@ This is the backend API service for HMS (Hotel Management System), providing RES
 - **Development**: `http://localhost:8000/api`
 - **Production**: TBD
 
-### System Endpoints
+### ✅ Active Endpoints
+
+#### Health Check
 | Method | Endpoint | Description | Status |
 |--------|----------|-------------|--------|
-| GET | `/v1/system/health` | Health check | ✅ Active |
+| GET | `/health` | Health check (alias) | ✅ Active |
+| GET | `/v1/system/health` | Health check (canonical) | ✅ Active |
 
-### Planned API Endpoints
-
-> **Note**: The following endpoints are planned but not yet implemented. They will return `501 Not Implemented`.
-
-#### Room Management
+#### Room Status (for frontend dashboard)
 | Method | Endpoint | Description | Status |
 |--------|----------|-------------|--------|
-| GET | `/v1/types` | Get room types | 🔜 Planned |
-| POST | `/v1/types` | Create room type | 🔜 Planned |
-| GET | `/v1/types/{id}` | Get room type details | 🔜 Planned |
-| PUT | `/v1/types/{id}` | Update room type | 🔜 Planned |
-| DELETE | `/v1/types/{id}` | Delete room type | 🔜 Planned |
+| GET | `/room-statuses?date=YYYY-MM-DD` | Get computed room statuses | ✅ Active |
+| GET | `/v1/room-statuses?date=YYYY-MM-DD` | Get computed room statuses (canonical) | ✅ Active |
+| POST | `/room-statuses` | Update room status | ✅ Active |
+| POST | `/v1/room-statuses` | Update room status (canonical) | ✅ Active |
 
-#### Room Status Management
+#### Room Types
 | Method | Endpoint | Description | Status |
 |--------|----------|-------------|--------|
-| GET | `/v1/room-statuses` | Get room statuses | 🔜 Planned |
-| POST | `/v1/room-statuses` | Create room status | 🔜 Planned |
-| GET | `/v1/room-statuses/{id}` | Get room status details | 🔜 Planned |
-| PUT | `/v1/room-statuses/{id}` | Update room status | 🔜 Planned |
-| DELETE | `/v1/room-statuses/{id}` | Delete room status | 🔜 Planned |
+| GET | `/types` | Get all room types (paginated) | ✅ Active |
+| GET | `/v1/types` | Get all room types (canonical) | ✅ Active |
 
-#### Rooms Management
+#### Rooms
 | Method | Endpoint | Description | Status |
 |--------|----------|-------------|--------|
-| GET | `/v1/rooms` | Get all rooms | 🔜 Planned |
-| POST | `/v1/rooms` | Create new room | 🔜 Planned |
-| GET | `/v1/rooms/{id}` | Get room details | 🔜 Planned |
-| PUT | `/v1/rooms/{id}` | Update room | 🔜 Planned |
-| DELETE | `/v1/rooms/{id}` | Delete room | 🔜 Planned |
+| GET | `/rooms` | Get all rooms (paginated, filterable) | ✅ Active |
+| GET | `/v1/rooms` | Get all rooms (canonical) | ✅ Active |
+| GET | `/rooms/{id}` | Get room details with relations | ✅ Active |
+| GET | `/v1/rooms/{id}` | Get room details (canonical) | ✅ Active |
 
-#### Customer Management
-| Method | Endpoint | Description | Status |
-|--------|----------|-------------|--------|
-| GET | `/v1/customers` | Get all customers | 🔜 Planned |
-| POST | `/v1/customers` | Create new customer | 🔜 Planned |
-| GET | `/v1/customers/{id}` | Get customer details | 🔜 Planned |
-| PUT | `/v1/customers/{id}` | Update customer | 🔜 Planned |
-| DELETE | `/v1/customers/{id}` | Delete customer | 🔜 Planned |
+### 🔜 Planned Endpoints (return 501)
 
-#### Transaction Management
-| Method | Endpoint | Description | Status |
-|--------|----------|-------------|--------|
-| GET | `/v1/transactions` | Get all transactions | 🔜 Planned |
-| POST | `/v1/transactions` | Create new transaction | 🔜 Planned |
-| GET | `/v1/transactions/{id}` | Get transaction details | 🔜 Planned |
-| PUT | `/v1/transactions/{id}` | Update transaction | 🔜 Planned |
-| DELETE | `/v1/transactions/{id}` | Delete transaction | 🔜 Planned |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/v1/customers` | Get all customers |
+| GET | `/v1/transactions` | Get all transactions |
+| GET | `/v1/payments` | Get all payments |
+| GET | `/v1/restaurant-bills` | Get all restaurant bills |
 
-#### Payment Management
-| Method | Endpoint | Description | Status |
-|--------|----------|-------------|--------|
-| GET | `/v1/payments` | Get all payments | 🔜 Planned |
-| POST | `/v1/payments` | Process payment | 🔜 Planned |
-| GET | `/v1/payments/{id}` | Get payment details | 🔜 Planned |
-| PUT | `/v1/payments/{id}` | Update payment | 🔜 Planned |
-| DELETE | `/v1/payments/{id}` | Delete payment | 🔜 Planned |
+## 🧪 Test with cURL
 
-#### Restaurant Billing
-| Method | Endpoint | Description | Status |
-|--------|----------|-------------|--------|
-| GET | `/v1/restaurant-bills` | Get all restaurant bills | 🔜 Planned |
-| POST | `/v1/restaurant-bills` | Create new bill | 🔜 Planned |
-| GET | `/v1/restaurant-bills/{id}` | Get bill details | 🔜 Planned |
-| PUT | `/v1/restaurant-bills/{id}` | Update bill | 🔜 Planned |
-| DELETE | `/v1/restaurant-bills/{id}` | Delete bill | 🔜 Planned |
+### Health Check
+```bash
+curl http://localhost:8000/api/health
+curl http://localhost:8000/api/v1/system/health
+```
+
+### Room Statuses
+```bash
+# Get room statuses for today
+curl http://localhost:8000/api/room-statuses
+
+# Get room statuses for a specific date
+curl "http://localhost:8000/api/room-statuses?date=2026-02-13"
+
+# Update room status (set room 1 to booked)
+curl -X POST http://localhost:8000/api/room-statuses \
+  -H "Content-Type: application/json" \
+  -d '{"room_id": 1, "status_key": "booked"}'
+
+# Update room status (set room 1 to normal_checkout/vacant)
+curl -X POST http://localhost:8000/api/room-statuses \
+  -H "Content-Type: application/json" \
+  -d '{"room_id": 1, "status_key": "normal_checkout"}'
+```
+
+### Room Types
+```bash
+# Get all types
+curl http://localhost:8000/api/types
+
+# Get paginated types
+curl "http://localhost:8000/api/types?page=1&per_page=10"
+```
+
+### Rooms
+```bash
+# Get all rooms
+curl http://localhost:8000/api/rooms
+
+# Get rooms with filters
+curl "http://localhost:8000/api/rooms?type_id=1&room_status_id=2"
+
+# Search rooms by number
+curl "http://localhost:8000/api/rooms?search=101"
+
+# Get single room with relations
+curl http://localhost:8000/api/rooms/1
+```
 
 ## 🗄️ Database Schema
 
@@ -180,35 +198,52 @@ The database schema is based on an existing phpMyAdmin dump (`hotel_app.sql`) th
 - `activity_log` - System activity logs
 - `notifications` - User notifications
 
-## 📋 Status / Changelog
+## 📋 Day 1 Progress (2-day deadline)
 
 ### ✅ Completed
 - [x] Laravel 12 project setup in repository root
 - [x] MySQL connection configuration in `.env.example`
-- [x] Basic API health endpoint (`/api/v1/system/health`)
-- [x] Initial API route structure with route groups
-- [x] Placeholder routes for all planned modules
-- [x] Project documentation and setup instructions
+- [x] JSON response helpers (`success()` / `error()`) in base Controller
+- [x] Health endpoint (`/api/health`, `/api/v1/system/health`)
+- [x] Room status API for frontend dashboard:
+  - [x] `GET /api/room-statuses?date=...` - returns computed statuses
+  - [x] `POST /api/room-statuses` - updates room status
+- [x] Types API (`GET /api/types`)
+- [x] Rooms API (`GET /api/rooms`, `GET /api/rooms/{id}`)
+- [x] Eloquent models: Type, RoomStatus, Room, Image, Facility
+- [x] Frontend compatibility aliases (non-versioned `/api/...` paths)
+- [x] Fixed route groups (no more nesting issues)
 
-### 🔜 Next Steps
-- [ ] Create Eloquent models for database tables
-- [ ] Implement authentication using Laravel Sanctum
-- [ ] Create controllers for each API module
-- [ ] Add API validation and request classes
-- [ ] Implement proper error handling and responses
-- [ ] Add API documentation with Swagger/OpenAPI
+### 🔜 Day 2 Tasks
+- [ ] Implement Customers API
+- [ ] Implement Transactions API
+- [ ] Implement Payments API
+- [ ] Implement Restaurant Bills API
+- [ ] Add authentication with Laravel Sanctum
+- [ ] Add validation request classes
 - [ ] Unit and feature tests
-- [ ] Database seeders for testing
 
-### 🎯 Upcoming Features
-- [ ] Room availability checking
-- [ ] Reservation system
-- [ ] Payment integration
-- [ ] Email notifications
-- [ ] Activity logging
-- [ ] Dashboard analytics APIs
-- [ ] File upload for images
-- [ ] Real-time availability updates
+## 🎯 Response Format
+
+All API responses use a consistent JSON format:
+
+### Success Response
+```json
+{
+  "success": true,
+  "message": "OK",
+  "data": { ... }
+}
+```
+
+### Error Response
+```json
+{
+  "success": false,
+  "message": "Error description",
+  "errors": { ... }
+}
+```
 
 ---
 
@@ -226,14 +261,10 @@ This project is proprietary software for HMS Hotel Management System.
 
 ---
 
-**For frontend developers**: Please refer to the API endpoints section above for integration. The health endpoint is ready for testing. All other endpoints will return `501 Not Implemented` until the corresponding controllers are implemented.
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**For frontend developers**: The following endpoints are ready for integration:
+- `GET /api/health` - Health check
+- `GET /api/room-statuses?date=YYYY-MM-DD` - Room statuses for dashboard
+- `POST /api/room-statuses` - Update room status (`{room_id, status_key}`)
+- `GET /api/types` - Room types
+- `GET /api/rooms` - All rooms (with filters)
+- `GET /api/rooms/{id}` - Single room details
