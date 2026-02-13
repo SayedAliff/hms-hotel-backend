@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HealthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,18 +15,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Health check endpoint
-Route::prefix('v1/system')->group(function () {
-    Route::get('/health', function () {
-        return response()->json([
-            'status' => 'ok',
-            'service' => 'hms-hotel-backend',
-            'timestamp' => now()->toISOString(),
-        ]);
-    });
-});
+// Health check endpoint (canonical and alias)
+Route::get('/health', [HealthController::class, 'health']); // /api/health
+Route::get('/v1/system/health', [HealthController::class, 'health']); // /api/v1/system/health
 
-// API v1 routes
+// Canonical v1 API routes
 Route::prefix('v1')->group(function () {
     
     // Types management
@@ -99,3 +93,13 @@ Route::prefix('v1')->group(function () {
         ], 501);
     });
 });
+
+// Alias: /api/types, /api/room-statuses, etc. (for frontend compatibility)
+Route::get('/types', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
+Route::get('/room-statuses', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
+Route::get('/rooms', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
+Route::get('/rooms/{id}', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
+Route::get('/customers', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
+Route::get('/transactions', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
+Route::get('/payments', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
+Route::get('/restaurant-bills', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
