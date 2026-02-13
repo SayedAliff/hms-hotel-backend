@@ -1,52 +1,232 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# HMS Hotel Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel 12 backend API for Hotel Management System (HMS).
 
-## About Laravel
+## 🏨 Project Description
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+This is the backend API service for HMS (Hotel Management System), providing RESTful APIs for hotel operations including room management, customer management, reservations, payments, and restaurant billing.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛠️ Tech Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Framework**: Laravel 12
+- **Database**: MySQL
+- **PHP**: 8.2+
+- **Authentication**: Laravel Sanctum (planned)
+- **API Documentation**: OpenAPI/Swagger (planned)
 
-## Learning Laravel
+## 🔗 Related Repositories
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- **Frontend**: [https://github.com/TareqJamilSarkar/HMS](https://github.com/TareqJamilSarkar/HMS)
+- **Backend**: [https://github.com/SayedAliff/hms-hotel-backend](https://github.com/SayedAliff/hms-hotel-backend)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🚀 Local Setup
 
-## Laravel Sponsors
+### Prerequisites
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- PHP 8.2 or higher
+- Composer
+- MySQL 8.0+
+- Node.js (for asset compilation)
 
-### Premium Partners
+### Installation Steps
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/SayedAliff/hms-hotel-backend.git
+   cd hms-hotel-backend
+   ```
 
-## Contributing
+2. **Install PHP dependencies**
+   ```bash
+   composer install
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+3. **Install Node.js dependencies**
+   ```bash
+   npm install
+   ```
 
-## Code of Conduct
+4. **Environment configuration**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+5. **Configure MySQL database**
+   
+   Update your `.env` file with your MySQL credentials:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=hotel_app
+   DB_USERNAME=your_mysql_user
+   DB_PASSWORD=your_mysql_password
+   ```
+
+   > **Note**: The `.env` file is local to your machine and not committed to version control.
+
+6. **Database setup (Optional)**
+   
+   If you have the `hotel_app.sql` dump file, you can import it:
+   ```bash
+   # Create the database
+   mysql -u your_username -p -e "CREATE DATABASE hotel_app;"
+   
+   # Import the SQL dump
+   mysql -u your_username -p hotel_app < hotel_app.sql
+   ```
+
+7. **Start the development server**
+   ```bash
+   php artisan serve
+   ```
+
+   The API will be available at: `http://localhost:8000`
+
+## 📡 API Endpoints
+
+### Base URL
+- **Development**: `http://localhost:8000/api`
+- **Production**: TBD
+
+### System Endpoints
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|--------|
+| GET | `/v1/system/health` | Health check | ✅ Active |
+
+### Planned API Endpoints
+
+> **Note**: The following endpoints are planned but not yet implemented. They will return `501 Not Implemented`.
+
+#### Room Management
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|--------|
+| GET | `/v1/types` | Get room types | 🔜 Planned |
+| POST | `/v1/types` | Create room type | 🔜 Planned |
+| GET | `/v1/types/{id}` | Get room type details | 🔜 Planned |
+| PUT | `/v1/types/{id}` | Update room type | 🔜 Planned |
+| DELETE | `/v1/types/{id}` | Delete room type | 🔜 Planned |
+
+#### Room Status Management
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|--------|
+| GET | `/v1/room-statuses` | Get room statuses | 🔜 Planned |
+| POST | `/v1/room-statuses` | Create room status | 🔜 Planned |
+| GET | `/v1/room-statuses/{id}` | Get room status details | 🔜 Planned |
+| PUT | `/v1/room-statuses/{id}` | Update room status | 🔜 Planned |
+| DELETE | `/v1/room-statuses/{id}` | Delete room status | 🔜 Planned |
+
+#### Rooms Management
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|--------|
+| GET | `/v1/rooms` | Get all rooms | 🔜 Planned |
+| POST | `/v1/rooms` | Create new room | 🔜 Planned |
+| GET | `/v1/rooms/{id}` | Get room details | 🔜 Planned |
+| PUT | `/v1/rooms/{id}` | Update room | 🔜 Planned |
+| DELETE | `/v1/rooms/{id}` | Delete room | 🔜 Planned |
+
+#### Customer Management
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|--------|
+| GET | `/v1/customers` | Get all customers | 🔜 Planned |
+| POST | `/v1/customers` | Create new customer | 🔜 Planned |
+| GET | `/v1/customers/{id}` | Get customer details | 🔜 Planned |
+| PUT | `/v1/customers/{id}` | Update customer | 🔜 Planned |
+| DELETE | `/v1/customers/{id}` | Delete customer | 🔜 Planned |
+
+#### Transaction Management
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|--------|
+| GET | `/v1/transactions` | Get all transactions | 🔜 Planned |
+| POST | `/v1/transactions` | Create new transaction | 🔜 Planned |
+| GET | `/v1/transactions/{id}` | Get transaction details | 🔜 Planned |
+| PUT | `/v1/transactions/{id}` | Update transaction | 🔜 Planned |
+| DELETE | `/v1/transactions/{id}` | Delete transaction | 🔜 Planned |
+
+#### Payment Management
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|--------|
+| GET | `/v1/payments` | Get all payments | 🔜 Planned |
+| POST | `/v1/payments` | Process payment | 🔜 Planned |
+| GET | `/v1/payments/{id}` | Get payment details | 🔜 Planned |
+| PUT | `/v1/payments/{id}` | Update payment | 🔜 Planned |
+| DELETE | `/v1/payments/{id}` | Delete payment | 🔜 Planned |
+
+#### Restaurant Billing
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|--------|
+| GET | `/v1/restaurant-bills` | Get all restaurant bills | 🔜 Planned |
+| POST | `/v1/restaurant-bills` | Create new bill | 🔜 Planned |
+| GET | `/v1/restaurant-bills/{id}` | Get bill details | 🔜 Planned |
+| PUT | `/v1/restaurant-bills/{id}` | Update bill | 🔜 Planned |
+| DELETE | `/v1/restaurant-bills/{id}` | Delete bill | 🔜 Planned |
+
+## 🗄️ Database Schema
+
+The database schema is based on an existing phpMyAdmin dump (`hotel_app.sql`) that includes the following tables:
+
+- `users` - System users and staff
+- `customers` - Hotel customers
+- `types` - Room types (single, double, suite, etc.)
+- `room_statuses` - Room status (available, occupied, maintenance, etc.)
+- `rooms` - Hotel rooms
+- `facilities` - Hotel facilities (WiFi, AC, etc.)
+- `facility_room` - Many-to-many relationship between facilities and rooms
+- `images` - Room and facility images
+- `transactions` - Booking transactions
+- `payments` - Payment records
+- `restaurant_bills` - Restaurant billing
+- `activity_log` - System activity logs
+- `notifications` - User notifications
+
+## 📋 Status / Changelog
+
+### ✅ Completed
+- [x] Laravel 12 project setup in repository root
+- [x] MySQL connection configuration in `.env.example`
+- [x] Basic API health endpoint (`/api/v1/system/health`)
+- [x] Initial API route structure with route groups
+- [x] Placeholder routes for all planned modules
+- [x] Project documentation and setup instructions
+
+### 🔜 Next Steps
+- [ ] Create Eloquent models for database tables
+- [ ] Implement authentication using Laravel Sanctum
+- [ ] Create controllers for each API module
+- [ ] Add API validation and request classes
+- [ ] Implement proper error handling and responses
+- [ ] Add API documentation with Swagger/OpenAPI
+- [ ] Unit and feature tests
+- [ ] Database seeders for testing
+
+### 🎯 Upcoming Features
+- [ ] Room availability checking
+- [ ] Reservation system
+- [ ] Payment integration
+- [ ] Email notifications
+- [ ] Activity logging
+- [ ] Dashboard analytics APIs
+- [ ] File upload for images
+- [ ] Real-time availability updates
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is proprietary software for HMS Hotel Management System.
+
+---
+
+**For frontend developers**: Please refer to the API endpoints section above for integration. The health endpoint is ready for testing. All other endpoints will return `501 Not Implemented` until the corresponding controllers are implemented.
 
 In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
