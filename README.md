@@ -84,6 +84,8 @@ This is the backend API service for HMS (Hotel Management System), providing RES
 
    The API will be available at: `http://localhost:8000`
 
+> **Session & Cache drivers**: The app defaults to `file` for both `SESSION_DRIVER` and `CACHE_STORE` so it works without extra database tables. If you prefer database-backed sessions, run `php artisan session:table && php artisan migrate` and set `SESSION_DRIVER=database` in `.env`.
+
 ## 📡 API Endpoints
 
 ### Base URL
@@ -120,14 +122,29 @@ This is the backend API service for HMS (Hotel Management System), providing RES
 | GET | `/rooms/{id}` | Get room details with relations | ✅ Active |
 | GET | `/v1/rooms/{id}` | Get room details (canonical) | ✅ Active |
 
-### 🔜 Planned Endpoints (return 501)
+#### Customers
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|--------|
+| GET | `/customers` | Get all customers (paginated, searchable) | ✅ Active |
+| GET | `/v1/customers` | Get all customers (canonical) | ✅ Active |
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/v1/customers` | Get all customers |
-| GET | `/v1/transactions` | Get all transactions |
-| GET | `/v1/payments` | Get all payments |
-| GET | `/v1/restaurant-bills` | Get all restaurant bills |
+#### Transactions
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|--------|
+| GET | `/transactions` | Get all transactions (paginated, filterable) | ✅ Active |
+| GET | `/v1/transactions` | Get all transactions (canonical) | ✅ Active |
+
+#### Payments
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|--------|
+| GET | `/payments` | Get all payments (paginated, filterable) | ✅ Active |
+| GET | `/v1/payments` | Get all payments (canonical) | ✅ Active |
+
+#### Restaurant Bills
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|--------|
+| GET | `/restaurant-bills` | Get all restaurant bills (paginated, filterable) | ✅ Active |
+| GET | `/v1/restaurant-bills` | Get all restaurant bills (canonical) | ✅ Active |
 
 ## 🧪 Smoke Test (Quick Verification)
 
@@ -135,7 +152,7 @@ This is the backend API service for HMS (Hotel Management System), providing RES
 ```bash
 php artisan route:list --path=api
 ```
-You should see **26 routes** including:
+You should see **22 routes** including:
 - `api/health` → `HealthController@health`
 - `api/v1/system/health` → `HealthController@health`
 - `api/room-statuses` (GET) → `Api\RoomStatusApiController@index`
@@ -143,6 +160,10 @@ You should see **26 routes** including:
 - `api/types` → `Api\TypeController@index`
 - `api/rooms` → `Api\RoomController@index`
 - `api/rooms/{id}` → `Api\RoomController@show`
+- `api/customers` → `Api\CustomerController@index`
+- `api/transactions` → `Api\TransactionController@index`
+- `api/payments` → `Api\PaymentController@index`
+- `api/restaurant-bills` → `Api\RestaurantBillController@index`
 - All of the above also under `api/v1/...`
 
 ### Step 2: Start server & test endpoints
@@ -178,6 +199,22 @@ curl -s "http://localhost:8000/api/rooms?search=101" | jq
 
 # Single room with relations
 curl -s http://localhost:8000/api/rooms/1 | jq
+
+# Customers (paginated, searchable)
+curl -s http://localhost:8000/api/customers | jq
+curl -s "http://localhost:8000/api/customers?search=john" | jq
+
+# Transactions (filterable by status, room, customer, dates)
+curl -s http://localhost:8000/api/transactions | jq
+curl -s "http://localhost:8000/api/transactions?status=checkin" | jq
+curl -s "http://localhost:8000/api/transactions?date_from=2024-01-01&date_to=2024-12-31" | jq
+
+# Payments (filterable by status, transaction)
+curl -s http://localhost:8000/api/payments | jq
+curl -s "http://localhost:8000/api/payments?transaction_id=1" | jq
+
+# Restaurant bills (filterable by status, transaction)
+curl -s http://localhost:8000/api/restaurant-bills | jq
 ```
 
 ### Troubleshooting
@@ -223,11 +260,13 @@ The database schema is based on an existing phpMyAdmin dump (`hotel_app.sql`) th
 - [x] Frontend compatibility aliases (non-versioned `/api/...` paths)
 - [x] Fixed route groups (no more nesting issues)
 
+- [x] Customers API (`GET /api/customers` with search filter)
+- [x] Transactions API (`GET /api/transactions` with status/room/customer/date filters)
+- [x] Payments API (`GET /api/payments` with status/transaction filters)
+- [x] Restaurant Bills API (`GET /api/restaurant-bills` with status/transaction filters)
+- [x] Eloquent models: Customer, Transaction, Payment, RestaurantBill
+
 ### 🔜 Day 2 Tasks
-- [ ] Implement Customers API
-- [ ] Implement Transactions API
-- [ ] Implement Payments API
-- [ ] Implement Restaurant Bills API
 - [ ] Add authentication with Laravel Sanctum
 - [ ] Add validation request classes
 - [ ] Unit and feature tests
@@ -277,3 +316,7 @@ This project is proprietary software for HMS Hotel Management System.
 - `GET /api/types` - Room types
 - `GET /api/rooms` - All rooms (with filters)
 - `GET /api/rooms/{id}` - Single room details
+- `GET /api/customers` - Customers (search: `?search=name`)
+- `GET /api/transactions` - Transactions (filters: `?status=`, `?room_id=`, `?customer_id=`, `?date_from=`, `?date_to=`)
+- `GET /api/payments` - Payments (filters: `?status=`, `?transaction_id=`)
+- `GET /api/restaurant-bills` - Restaurant bills (filters: `?status=`, `?transaction_id=`)

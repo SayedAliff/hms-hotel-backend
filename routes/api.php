@@ -5,6 +5,10 @@ use App\Http\Controllers\HealthController;
 use App\Http\Controllers\Api\RoomStatusApiController;
 use App\Http\Controllers\Api\TypeController;
 use App\Http\Controllers\Api\RoomController;
+use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\TransactionController;
+use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\RestaurantBillController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,25 +49,17 @@ Route::prefix('v1')->group(function () {
     Route::get('/rooms', [RoomController::class, 'index']);
     Route::get('/rooms/{id}', [RoomController::class, 'show']);
 
-    // -------------------------------------------------------------------------
-    // PLACEHOLDER ROUTES (return 501 Not Implemented)
-    // -------------------------------------------------------------------------
-
     // Customers
-    Route::get('/customers', fn() => response()->json(['success' => false, 'message' => 'Not implemented'], 501));
-    Route::get('/customers/{id}', fn() => response()->json(['success' => false, 'message' => 'Not implemented'], 501));
+    Route::get('/customers', [CustomerController::class, 'index']);
 
     // Transactions
-    Route::get('/transactions', fn() => response()->json(['success' => false, 'message' => 'Not implemented'], 501));
-    Route::get('/transactions/{id}', fn() => response()->json(['success' => false, 'message' => 'Not implemented'], 501));
+    Route::get('/transactions', [TransactionController::class, 'index']);
 
     // Payments
-    Route::get('/payments', fn() => response()->json(['success' => false, 'message' => 'Not implemented'], 501));
-    Route::get('/payments/{id}', fn() => response()->json(['success' => false, 'message' => 'Not implemented'], 501));
+    Route::get('/payments', [PaymentController::class, 'index']);
 
     // Restaurant bills
-    Route::get('/restaurant-bills', fn() => response()->json(['success' => false, 'message' => 'Not implemented'], 501));
-    Route::get('/restaurant-bills/{id}', fn() => response()->json(['success' => false, 'message' => 'Not implemented'], 501));
+    Route::get('/restaurant-bills', [RestaurantBillController::class, 'index']);
 });
 
 // ============================================================================
@@ -82,8 +78,14 @@ Route::get('/types/{id}', [TypeController::class, 'show']);
 Route::get('/rooms', [RoomController::class, 'index']);
 Route::get('/rooms/{id}', [RoomController::class, 'show']);
 
-// Placeholder aliases for future endpoints
-Route::get('/customers', fn() => response()->json(['success' => false, 'message' => 'Not implemented'], 501));
-Route::get('/transactions', fn() => response()->json(['success' => false, 'message' => 'Not implemented'], 501));
-Route::get('/payments', fn() => response()->json(['success' => false, 'message' => 'Not implemented'], 501));
-Route::get('/restaurant-bills', fn() => response()->json(['success' => false, 'message' => 'Not implemented'], 501));
+// Customers
+Route::get('/customers', [CustomerController::class, 'index']);
+
+// Transactions
+Route::get('/transactions', [TransactionController::class, 'index']);
+
+// Payments
+Route::get('/payments', [PaymentController::class, 'index']);
+
+// Restaurant bills
+Route::get('/restaurant-bills', [RestaurantBillController::class, 'index']);
