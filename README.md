@@ -129,56 +129,65 @@ This is the backend API service for HMS (Hotel Management System), providing RES
 | GET | `/v1/payments` | Get all payments |
 | GET | `/v1/restaurant-bills` | Get all restaurant bills |
 
-## 🧪 Test with cURL
+## 🧪 Smoke Test (Quick Verification)
 
-### Health Check
+### Step 1: Verify routes are registered
 ```bash
-curl http://localhost:8000/api/health
-curl http://localhost:8000/api/v1/system/health
+php artisan route:list --path=api
+```
+You should see **26 routes** including:
+- `api/health` → `HealthController@health`
+- `api/v1/system/health` → `HealthController@health`
+- `api/room-statuses` (GET) → `Api\RoomStatusApiController@index`
+- `api/room-statuses` (POST) → `Api\RoomStatusApiController@update`
+- `api/types` → `Api\TypeController@index`
+- `api/rooms` → `Api\RoomController@index`
+- `api/rooms/{id}` → `Api\RoomController@show`
+- All of the above also under `api/v1/...`
+
+### Step 2: Start server & test endpoints
+```bash
+php artisan serve
 ```
 
-### Room Statuses
+Then in another terminal:
 ```bash
-# Get room statuses for today
-curl http://localhost:8000/api/room-statuses
+# Health check (no DB needed)
+curl -s http://localhost:8000/api/health | jq
+# Expected: {"success":true,"message":"OK","data":{"status":"ok","service":"hms-hotel-backend"}}
 
-# Get room statuses for a specific date
-curl "http://localhost:8000/api/room-statuses?date=2026-02-13"
+# Room statuses (requires DB + hotel_app imported)
+curl -s http://localhost:8000/api/room-statuses | jq
+# Expected: {"success":true,"message":"OK","data":{"date":"...","statuses":{"1":"booked|normal_checkout",...}}}
 
-# Update room status (set room 1 to booked)
-curl -X POST http://localhost:8000/api/room-statuses \
+# Room statuses with date filter
+curl -s "http://localhost:8000/api/room-statuses?date=2026-02-13" | jq
+
+# Update room status
+curl -s -X POST http://localhost:8000/api/room-statuses \
   -H "Content-Type: application/json" \
-  -d '{"room_id": 1, "status_key": "booked"}'
+  -d '{"room_id": 1, "status_key": "booked"}' | jq
 
-# Update room status (set room 1 to normal_checkout/vacant)
-curl -X POST http://localhost:8000/api/room-statuses \
-  -H "Content-Type: application/json" \
-  -d '{"room_id": 1, "status_key": "normal_checkout"}'
+# Types
+curl -s http://localhost:8000/api/types | jq
+
+# Rooms (paginated + filterable)
+curl -s http://localhost:8000/api/rooms | jq
+curl -s "http://localhost:8000/api/rooms?type_id=1" | jq
+curl -s "http://localhost:8000/api/rooms?search=101" | jq
+
+# Single room with relations
+curl -s http://localhost:8000/api/rooms/1 | jq
 ```
 
-### Room Types
-```bash
-# Get all types
-curl http://localhost:8000/api/types
-
-# Get paginated types
-curl "http://localhost:8000/api/types?page=1&per_page=10"
-```
-
-### Rooms
-```bash
-# Get all rooms
-curl http://localhost:8000/api/rooms
-
-# Get rooms with filters
-curl "http://localhost:8000/api/rooms?type_id=1&room_status_id=2"
-
-# Search rooms by number
-curl "http://localhost:8000/api/rooms?search=101"
-
-# Get single room with relations
-curl http://localhost:8000/api/rooms/1
-```
+### Troubleshooting
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| `Connection refused` | MySQL not running | Start XAMPP MySQL |
+| `SQLSTATE[HY000] [1049] Unknown database` | DB not created | `mysql -u root -e "CREATE DATABASE hotel_app;"` then import SQL |
+| `SQLSTATE[42S02] Base table not found` | Tables missing | Import: `mysql -u root hotel_app < hotel_app.sql` |
+| `404 Not Found` on `/api/...` | API routes not loaded | Check `bootstrap/app.php` has `api:` line |
+| Empty `statuses: {}` | No rooms in DB | Import `hotel_app.sql` |
 
 ## 🗄️ Database Schema
 
