@@ -15,11 +15,13 @@ use App\Http\Controllers\HealthController;
 |
 */
 
-// Health check endpoint (canonical and alias)
-Route::get('/health', [HealthController::class, 'health']); // /api/health
-Route::get('/v1/system/health', [HealthController::class, 'health']); // /api/v1/system/health
+// Health check endpoint
+Route::prefix('v1/system')->group(function () {
+    // Health check endpoint (canonical and alias)
 
-// Canonical v1 API routes
+    Route::get('/health', [HealthController::class, 'health']); // /api/health
+    Route::get('/v1/system/health', [HealthController::class, 'health']); // /api/v1/system/health
+
 Route::prefix('v1')->group(function () {
     
     // Types management
@@ -94,12 +96,13 @@ Route::prefix('v1')->group(function () {
     });
 });
 
-// Alias: /api/types, /api/room-statuses, etc. (for frontend compatibility)
-Route::get('/types', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
-Route::get('/room-statuses', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
-Route::get('/rooms', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
-Route::get('/rooms/{id}', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
-Route::get('/customers', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
-Route::get('/transactions', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
-Route::get('/payments', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
-Route::get('/restaurant-bills', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
+    // Alias: /api/types, /api/room-statuses, etc. (for frontend compatibility)
+    Route::get('/types', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
+    Route::get('/room-statuses', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
+    Route::get('/rooms', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
+    Route::get('/rooms/{id}', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
+    Route::get('/customers', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
+    Route::get('/transactions', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
+    Route::get('/payments', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
+        Route::get('/restaurant-bills', function() { return response()->json(['message'=>'Not implemented','status'=>501],501); });
+    });
